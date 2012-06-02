@@ -1,4 +1,4 @@
-package cz.rhok.prague.osf.governmentcontacts.scraper.uzemnisamosprava;
+package cz.rhok.prague.osf.governmentcontacts.scraper;
 
 import java.io.IOException;
 import java.util.Map;
@@ -18,8 +18,10 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.Maps;
 import com.sun.xml.internal.bind.v2.TODO;
 
-//TODO : michal pridat scrapovani adresy
-public class OrganyUzemniSamospravyScaper {
+//TODO : michal pridat scrapovani adresy (adresa, mesto, psc)
+//TODO : michal pridat scrapovani telefonu
+//TODO : michal pridat plneni dat pro e-podatelnu (email v v zalozce zakladni info neni vzdy vyplnen)
+public class SeznamDatovychSchranekDetailPageScaper {
 
 	private static final Pattern MAIL_REGEX_PATTERN = Pattern.compile("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", Pattern.CASE_INSENSITIVE);
 	private static Logger log = play.Logger.log4j; //org.apache.log4j.Logger.getLogger("another.logger");
@@ -32,6 +34,8 @@ public class OrganyUzemniSamospravyScaper {
 	public Organization scrape(String pageUrl) {
 		
 		log.debug("Start scraping of: " + pageUrl);
+		
+		Long startTime = System.currentTimeMillis();
 		
 		Document doc = null;
 		try {
@@ -58,6 +62,8 @@ public class OrganyUzemniSamospravyScaper {
 			scrappedData.put(label, value);
 
 		}
+		
+		Long endTime = System.currentTimeMillis();
 
 		Organization organization = new Organization();
 
@@ -68,8 +74,11 @@ public class OrganyUzemniSamospravyScaper {
 		organization.organizationId = scrappedData.get("IČ");
 		organization.email = parseEmail(scrappedData);
 		
-
+		long timeElapsed = endTime - startTime;
+		log.debug("Scraping of " + pageUrl + " succesfully done in " + timeElapsed + " ms");
+		
 		return organization;
+		
 	}
 
 	private String parseEmail(Map<String, String> scrappedData) {

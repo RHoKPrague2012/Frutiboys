@@ -1,4 +1,4 @@
-package cz.rhok.prague.osf.governmentcontacts.scraper.uzemnisamosprava;
+package cz.rhok.prague.osf.governmentcontacts.scraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -13,7 +13,7 @@ import cz.rhok.prague.osf.governmentcontacts.tests.IntegrationTests;
  */
 @Category(IntegrationTests.class)
 public class OrganUzemniSamospravyPragueIntegrationTests 
-								extends AbstractOrganUzemniSamospravyScraperIntegrationTest {
+								extends AbstractSeznamDatovychSchranekDetailPageScraperIntegrationTest {
 
 	private static final String PRAGUE_URL = "http://seznam.gov.cz/ovm/regionDetail.do?path=KPRAHA&ref=obcan";
 	
