@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Government Contacts API Help</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="@{'/public/stylesheets/bootstrap.min.css'}" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="@{'/public/stylesheets/bootstrap-responsive.min.css'}" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Government Contacts API</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>Government Contacts API Help</h1>
+        <p>Zde naleznete návod k použití API, včetně výrazů pro hledání a formátu odpovědí.</p>
+      </div>
+
+      <div class="row">
+        <div class="span12">
+          <h2>Formát dotazu / Request format</h2>
+           <p>Dotaz na API se provádí <b>HTTP GET</b> dotazem s parametry, pomocí kterých se vyhledávají organizace.</p>
+           <p>Je možné / nutné určit <b>1-n parametrů</b> pro hledání. Tyto parametry se skládají pomocí logického operátoru AND. Možné parametry a jejich významy jsou popsány v sekci <a href="#fieldExplanation">Popis atributů</a></p>
+           <p>Je možné používat <b>zástupný znak *</b> pro 0-n libovolných znaků.</p>
+           
+           <p><b>Příklady:</b></p>
+           <p><a href="/api/?code=FUCaslavi"><code>/api/?code=FUCaslavi</code></a>&nbsp;&nbsp;&nbsp;Nalezne organizaci s kódem "FUCaslavi"</p>
+           <p><a href="/api/?name=Praha*"><code>/api/?name=Praha*</code></a>&nbsp;&nbsp;&nbsp;Nalezne organizace s názvem začínajícím slovem "Praha" (např. Praha 1, Praha 2, ..)</p>
+           <p><a href="/api/?name=Praha*&type=Orgán%20státní%20správy"><code>/api/?name=Praha*&type=Orgán státní správy</code></a>&nbsp;&nbsp;&nbsp;Nalezne všechny orgány státní správy s názvem začínajícím slovem "Praha"</p>
+           <p><b>Poznámka:</b> parametry URL requestů je potřeba escapovat viz <a href="http://en.wikipedia.org/wiki/Percent-encoding">Percent encoding</a></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <div class="span12">
+          <h2>Formát odpovědi / Response format</h2>
+           <p>Data odpovědi API jsou ve formátu <a href="http://en.wikipedia.org/wiki/JSON">JSON</a>. Atributy datových objektů jsou popsány v sekci <a href="#fieldExplanation">Popis atributů</a></p>
+           <p>Možné výsledky dotazu</p>
+           <ul>
+             <li>Podle dotazu <b>není nalezena</b> žádná organizace - vrací prázdnou odpověď</li>
+             <li>Podle dotazu je <b>nalezena právě jedna</b> organizace - vrací odpověď s JSON objektem této organizace</li>
+             <li>Podle dotazu je <b>nalezeno 2-n</b> organizací - vrací odpověď s polem JSON objeků nalezených organizací</li>
+           </ul>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <div class="span12">
+          <h2 name="fieldExplanation">Popis atributů / Field explanation</h2>
+	      <table class="table">  
+	        <thead>  
+	          <tr>  
+	            <th>Field Name</th>  
+	            <th>Description</th>  
+	          </tr>  
+	        </thead>  
+	        <tbody>  
+				<tr>
+				  <td>name</td>
+				  <td>Název organizace</td>
+				</tr>
+				<tr>
+				  <td>address</td>
+				  <td>Adresa organizace</td>
+				</tr>
+				<tr>
+				  <td>contactAddress</td>
+				  <td>Kontaktní adresa</td>
+				</tr>
+				<tr>
+				  <td>eRegistry</td>
+				  <td>e-podatelna</td>
+				</tr>
+				<tr>
+				  <td>organizationId</td>
+				  <td>IČ</td>
+				</tr>
+				<tr>
+				  <td>taxId</td>
+				  <td>DIČ</td>
+				</tr>
+				<tr>
+				  <td>bankAccount</td>
+				  <td>Bankovní spojení</td>
+				</tr>
+				<tr>
+				  <td>code</td>
+				  <td>Kód organizace</td>
+				</tr>
+				<tr>
+				  <td>type</td>
+				  <td>Typ instituce</td>
+				</tr>
+				<tr>
+				  <td>www</td>
+				  <td>Adresa webové prezentace</td>
+				</tr>
+				<tr>
+				  <td>email</td>
+				  <td>E-mail</td>
+				</tr>
+				<tr>
+				  <td>phone</td>
+				  <td>Telefon</td>
+				</tr>
+				<tr>
+				  <td>officeHours</td>
+				  <td>Úřední hodiny</td>
+				</tr>
+				<tr>
+				  <td>dataBoxId</td>
+				  <td>Identifikátor datové schránky</td>
+				</tr>
+	        </tbody>  
+	      </table>           
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Michal Bernhard & Vlastimil Dolejš @ <a href="https://sites.google.com/a/gug.cz/www2/rhok-2012">RHoK Prague 2012</a></p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--     <script src="../assets/js/jquery.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-transition.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-alert.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-modal.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-dropdown.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-scrollspy.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-tab.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-tooltip.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-popover.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-button.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-collapse.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-carousel.js"></script> -->
+<!--     <script src="../assets/js/bootstrap-typeahead.js"></script> -->
+
+  </body>
+</html>

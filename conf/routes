@@ -13,6 +13,7 @@ GET     /public/                                staticDir:public
 
 # REST API
 GET     /api/                                   OrganizationsRest.organizations
+GET     /api/help/                              OrganizationsRest.help
 
 # Import CRUD routes
 *      /admin                                   module:crud

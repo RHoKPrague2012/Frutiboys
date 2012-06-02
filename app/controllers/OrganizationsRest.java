@@ -25,6 +25,10 @@ public class OrganizationsRest extends Controller {
 		Map<String, String> parameters = params.allSimple();
 		parameters.remove("body"); // hack - play puts empty body parameter to each request???
 		
+		if (parameters.isEmpty()) {
+			help();
+		}
+		
 		String queryFindBy = "";
 		List<String> queryParams = Lists.newArrayList();
 
@@ -60,5 +64,9 @@ public class OrganizationsRest extends Controller {
 		} else {
 			renderJSON(organizations);
 		}
+	}
+	
+	public static void help() {
+		render();
 	}
 }
