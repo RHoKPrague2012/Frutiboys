@@ -7,13 +7,14 @@ import javax.persistence.Entity;
 
 import play.db.jpa.Model;
 import play.modules.mongo.MongoEntity;
+import play.modules.mongo.MongoModel;
 
 /**
  * @author Vlastimil Dolejs (vlasta.dolejs@gmail.com)
  *
  */
 @MongoEntity("organization")
-public class Organization extends Model {
+public class Organization extends MongoModel {
 
 	public String name;
 	
