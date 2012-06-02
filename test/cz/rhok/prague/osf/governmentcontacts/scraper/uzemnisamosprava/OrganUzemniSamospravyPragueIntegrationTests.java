@@ -1,12 +1,8 @@
-import models.Organization;
-
-import org.junit.BeforeClass;
+package cz.rhok.prague.osf.governmentcontacts.scraper.uzemnisamosprava;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import cz.rhok.prague.osf.governmentcontacts.OrganyUzemniSamospravyScaper;
-
-import play.test.UnitTest;
+import cz.rhok.prague.osf.governmentcontacts.tests.IntegrationTests;
 
 /**
  * Integration test for scraping "organy uzemni samospravy" with usage of Prague page 
@@ -16,18 +12,14 @@ import play.test.UnitTest;
  *
  */
 @Category(IntegrationTests.class)
-public class OrganyUzemniSamospravy_Prague_IntegrationTests extends UnitTest {
+public class OrganUzemniSamospravyPragueIntegrationTests 
+								extends AbstractOrganUzemniSamospravyScraperIntegrationTest {
 
-	private static final String PRAGUE_URL = 
-								  "http://seznam.gov.cz/ovm/regionDetail.do?path=KPRAHA&ref=obcan";
+	private static final String PRAGUE_URL = "http://seznam.gov.cz/ovm/regionDetail.do?path=KPRAHA&ref=obcan";
 	
-	private static Organization organization;
-	
-	@BeforeClass
-	public static void beforeAllTests() {
-		OrganyUzemniSamospravyScaper scraper = new OrganyUzemniSamospravyScaper();
-		String pragueUrl = PRAGUE_URL;
-		organization = scraper.scrape(pragueUrl);
+	@Override
+	protected String getUrlForScraping() {
+		return PRAGUE_URL;
 	}
 	
     /**
@@ -63,5 +55,5 @@ public class OrganyUzemniSamospravy_Prague_IntegrationTests extends UnitTest {
     public void testScraperForOrganizationEmail() {
     	assertEquals("posta@cityofprague.cz", organization.email);
     }
-    
+
 }

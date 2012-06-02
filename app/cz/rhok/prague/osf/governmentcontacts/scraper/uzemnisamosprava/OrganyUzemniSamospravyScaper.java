@@ -1,4 +1,4 @@
-package cz.rhok.prague.osf.governmentcontacts;
+package cz.rhok.prague.osf.governmentcontacts.scraper.uzemnisamosprava;
 
 import java.io.IOException;
 import java.util.Map;
@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.Maps;
 import com.sun.xml.internal.bind.v2.TODO;
 
+//TODO : michal pridat scrapovani adresy
 public class OrganyUzemniSamospravyScaper {
 
 	private static final Pattern MAIL_REGEX_PATTERN = Pattern.compile("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", Pattern.CASE_INSENSITIVE);
