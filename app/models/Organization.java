@@ -5,6 +5,8 @@ package models;
 
 import javax.persistence.Entity;
 
+import org.apache.commons.lang.StringUtils;
+
 import play.db.jpa.Model;
 
 /**
@@ -48,5 +50,15 @@ public class Organization extends Model /* MongoModel */ {
 	public String officeHours;
 	
 	public String dataBoxId;
+
+	
+	@Override
+	public String toString() {
+		if (StringUtils.isEmpty(name)) {
+			return super.toString();
+		} else {
+			return name;
+		}
+	}
 	
 }

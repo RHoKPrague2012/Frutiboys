@@ -2,4 +2,10 @@
 .settings
 .project
 tmp/*
+<<<<<<< HEAD
 eclipse/*
+=======
+/test-result
+/eclipse
+/db
+>>>>>>> f4c15299f5f09d7495f158c51e9411f7e5425f0e
