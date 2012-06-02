@@ -2,3 +2,6 @@
 .settings
 .project
 tmp/*
+/test-result
+/eclipse
+/db
