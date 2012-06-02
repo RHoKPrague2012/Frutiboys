@@ -9,7 +9,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 
 # REST API
-GET     /api/                                   OrganizationsRest.organizations
+GET     /organization                           OrganizationsRest.organizations
 GET     /api/help/                              OrganizationsRest.help
 
 GET     /admin/testbed                          TestBed.index

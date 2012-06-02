@@ -26,7 +26,8 @@ public class OrganizationsRest extends Controller {
 		parameters.remove("body"); // hack - play puts empty body parameter to each request???
 		
 		if (parameters.isEmpty()) {
-			help();
+			//help();
+			render("OrganizationsRest/help.html");
 		}
 		
 		String queryFindBy = "";

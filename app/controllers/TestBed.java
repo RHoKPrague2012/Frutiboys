@@ -4,6 +4,8 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.lang.time.StopWatch;
+
 import com.google.common.collect.Lists;
 
 import models.Organization;
@@ -31,6 +33,10 @@ public class TestBed extends Controller {
     	
     	List<URL> detailPageUrls = Lists.newArrayList();
     	
+    	StopWatch watch = new StopWatch();
+    	
+    	watch.start();
+    	
     	boolean repeatLoop = true;
 		while (repeatLoop)
     	try {
@@ -49,6 +55,11 @@ public class TestBed extends Controller {
     		Organization organization = detailPageScaper.scrape(url.toString());
     		organization.save();
 		}
+    	
+    	watch.stop();
+    	
+    	Long timeElapsed = watch.getTime();
+		renderText("Succesfully saved (in " + timeElapsed + " ms)");
     
     }
 
