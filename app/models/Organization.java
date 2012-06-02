@@ -6,15 +6,14 @@ package models;
 import javax.persistence.Entity;
 
 import play.db.jpa.Model;
-import play.modules.mongo.MongoEntity;
-import play.modules.mongo.MongoModel;
 
 /**
  * @author Vlastimil Dolejs (vlasta.dolejs@gmail.com)
  *
  */
-@MongoEntity("organization")
-public class Organization extends MongoModel {
+//@MongoEntity("organization")
+@Entity
+public class Organization extends Model /* MongoModel */ {
 
 	public String name;
 	
