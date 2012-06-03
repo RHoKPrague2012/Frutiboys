@@ -30,7 +30,7 @@ public class SeznamDatovychSchranekKrajeListPageScraper
 		for (Element detailPageLinkAnchorElement : anchorElementsWithDetailPageLink) {
 			String relativeUrlAsString = detailPageLinkAnchorElement.attr("href");
 			
-			String urlAsString = DATA_BOXES_BASE_URL + relativeUrlAsString;
+			String urlAsString = getDataBoxBaseUrl() + relativeUrlAsString;
 			
 			try {
 				detailPagesUrl.add(new URL(urlAsString));

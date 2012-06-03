@@ -11,7 +11,7 @@ import org.jsoup.nodes.Document;
 
 public class ScraperHelper {
 	
-	public static String DATA_BOXES_BASE_URL = "http://seznam.gov.cz/ovm/";
+	private static String DATA_BOXES_BASE_URL = "http://seznam.gov.cz/ovm/";
 	
 	private static final Logger log = play.Logger.log4j; 
 
@@ -50,6 +50,10 @@ public class ScraperHelper {
 		}
 	}
 	
+	protected String getDataBoxBaseUrl() {
+		return DATA_BOXES_BASE_URL;
+	}
+
 	
 
 }
