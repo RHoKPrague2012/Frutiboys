@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import models.Address;
 import models.Organization;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -71,19 +70,9 @@ public class SeznamDatovychSchranekDetailPageScaper {
 		
 		Long endTime = System.currentTimeMillis();
 
-		String dataBoxId = scrappedData.get("Identifikátor datové schránky");
+		Organization organization = new Organization();
 		
-		if (StringUtils.isBlank(dataBoxId)) {
-			throw new RuntimeException("DataBox ID not found on this page: " + pageUrl);
-		}
-		
-		Organization organization = Organization.find("byDataBoxId", dataBoxId).first();
-		
-		if (organization == null) {
-			organization = new Organization();
-		}
-
-		organization.dataBoxId = dataBoxId;
+		organization.dataBoxId = scrappedData.get("Identifikátor datové schránky");
 		organization.name = scrappedData.get("Název");
 		organization.code = scrappedData.get("Kód organizace");
 		organization.taxId = scrappedData.get("DIČ");
