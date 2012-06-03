@@ -19,8 +19,7 @@ import cz.rhok.prague.osf.governmentcontacts.geocoding.Geocoder;
  * @author Vlastimil Dolejs (vlasta.dolejs@gmail.com)
  *
  */
-//@On("0 0 2 * * ?")
-@On("0 0/1 * * * ?")
+@On("0 0 2 * * ?")
 public class GeocodingJob extends Job {
 
 	private static Logger log = play.Logger.log4j;
