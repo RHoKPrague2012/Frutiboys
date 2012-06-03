@@ -10,6 +10,7 @@ import models.Organization;
 
 import org.apache.log4j.Logger;
 
+import play.db.jpa.JPA;
 import play.jobs.Job;
 import play.jobs.On;
 import cz.rhok.prague.osf.governmentcontacts.geocoding.Geocoder;
@@ -44,6 +45,9 @@ public class GeocodingJob extends Job {
 						organization.longitude = geoLocation.lng;
 						
 						organization.save();
+						
+						// save immediately
+						JPA.em().flush();
 					}
 				} catch (Throwable e) {
 					log.warn("Failed to geocode organization address: " + organization.getAddress(), e);
