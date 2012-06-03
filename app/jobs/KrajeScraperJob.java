@@ -6,30 +6,27 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import models.Organization;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import junit.extensions.RepeatedTest;
-
-import models.Organization;
 import play.Logger;
-import play.jobs.Job;
+import play.jobs.Every;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import cz.rhok.prague.osf.governmentcontacts.helper.RepeatOnTimeoutTask;
 import cz.rhok.prague.osf.governmentcontacts.scraper.PaginableRecordsListPageRetriever;
 import cz.rhok.prague.osf.governmentcontacts.scraper.PaginableRecordsListPageRetriever.PaginableRecord;
-import cz.rhok.prague.osf.governmentcontacts.scraper.ScraperHelper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekDetailPageScaper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekKrajeListPageScraper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekMunicipalityListPageScraper;
 
-public class KrajeScraperJob extends Job {
+@Every("0 0 23 * * ?") /* each day in 23:00 */
+public class KrajeScraperJob extends AbstractScraperJob {
 
 	private static final String KRAJS_LISTING_PAGE = "http://seznam.gov.cz/ovm/regionList.do";
 
@@ -146,7 +143,7 @@ public class KrajeScraperJob extends Job {
 
 					Organization organization = detailPageScrapeTask.call();
 
-					organization.save();
+					saveOrganization(organization);
 
 				}
 

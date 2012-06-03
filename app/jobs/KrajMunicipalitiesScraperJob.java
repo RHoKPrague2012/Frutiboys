@@ -2,12 +2,9 @@ package jobs;
 
 import java.net.URL;
 
-import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekDetailPageScaper;
-
 import play.Logger;
-import play.jobs.Job;
 
-public class KrajMunicipalitiesScraperJob extends Job {
+public class KrajMunicipalitiesScraperJob extends AbstractScraperJob {
 
 	private final URL urlOfKrajDetailPage;
 
