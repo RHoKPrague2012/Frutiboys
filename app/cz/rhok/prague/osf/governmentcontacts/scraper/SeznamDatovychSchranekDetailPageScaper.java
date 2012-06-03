@@ -100,15 +100,18 @@ public class SeznamDatovychSchranekDetailPageScaper {
 		String addressText = scrappedData.get("Adresa sídla");
 		
 		Address address = new Address();
-		String[] lines = addressText.split("\n");
 		
-		if (lines.length == 3) {
-			address.street = lines[0].trim();
-			address.city = lines[1].trim();
-			address.zipCode = lines[2].trim();
-		} else {
-			address.street = addressText;
-			log.warn("Unknown address format: " + addressText);
+		if (addressText != null) {
+			String[] lines = addressText.split("\n");
+			
+			if (lines.length == 3) {
+				address.street = lines[0].trim();
+				address.city = lines[1].trim();
+				address.zipCode = lines[2].trim();
+			} else {
+				address.street = addressText;
+				log.warn("Unknown address format: " + addressText);
+			}
 		}
 		
 		return address;
