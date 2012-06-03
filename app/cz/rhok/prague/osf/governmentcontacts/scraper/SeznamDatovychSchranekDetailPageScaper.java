@@ -5,21 +5,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import models.Address;
 import models.Organization;
 
-import org.apache.ivy.plugins.repository.ssh.Scp;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.google.common.collect.Maps;
-import com.sun.xml.internal.bind.v2.TODO;
 
-//TODO : michal pridat scrapovani adresy (adresa, mesto, psc)
-//TODO : michal pridat scrapovani telefonu
 //TODO : michal pridat plneni dat pro e-podatelnu (email v v zalozce zakladni info neni vzdy vyplnen)
 public class SeznamDatovychSchranekDetailPageScaper {
 
@@ -52,12 +49,21 @@ public class SeznamDatovychSchranekDetailPageScaper {
 		for (Element dataRow : dataRows) {
 
 			String label = dataRow.select("th").text();
-			String value = dataRow.select("td").text();
-			
+
 			// remove trailing ":" from label so 
 			// instead of "Identifikátor datové schránky:" its just
 			// "Identifikátor datové schránky"
 			label = label.replace(":", "");
+			
+			String value;
+			if ("Adresa sídla".equals(label)) {
+				// replace <br/> tags with newline
+				value = dataRow.select("td").html();
+				value = value.replace("<br />", "\n");
+				value = value.replace("<br/>", "\n");
+			} else {
+				value = dataRow.select("td").text();
+			}
 			
 			scrappedData.put(label, value);
 
@@ -65,14 +71,34 @@ public class SeznamDatovychSchranekDetailPageScaper {
 		
 		Long endTime = System.currentTimeMillis();
 
-		Organization organization = new Organization();
+		String dataBoxId = scrappedData.get("Identifikátor datové schránky");
+		
+		if (StringUtils.isBlank(dataBoxId)) {
+			throw new RuntimeException("DataBox ID not found on this page: " + pageUrl);
+		}
+		
+		Organization organization = Organization.find("byDataBoxId", dataBoxId).first();
+		
+		if (organization == null) {
+			organization = new Organization();
+		}
 
-		organization.dataBoxId = scrappedData.get("Identifikátor datové schránky");
+		organization.dataBoxId = dataBoxId;
 		organization.name = scrappedData.get("Název");
 		organization.code = scrappedData.get("Kód organizace");
 		organization.taxId = scrappedData.get("DIČ");
 		organization.organizationId = scrappedData.get("IČ");
 		organization.email = parseEmail(scrappedData);
+		organization.phone = scrappedData.get("Telefon");
+		organization.bankAccount = scrappedData.get("Bankovní spojení");
+		organization.type = scrappedData.get("Typ instituce");
+		organization.officeHours = scrappedData.get("Úřední hodiny");
+		organization.www = scrappedData.get("WWW");
+		
+		Address address = parseAddress(scrappedData);
+		organization.addressStreet = address.street;
+		organization.addressCity = address.city;
+		organization.addressZipCode = address.zipCode;
 		
 		long timeElapsed = endTime - startTime;
 		log.debug("Scraping of " + pageUrl + " succesfully done in " + timeElapsed + " ms");
@@ -81,6 +107,24 @@ public class SeznamDatovychSchranekDetailPageScaper {
 		
 	}
 
+	private Address parseAddress(Map<String, String> scrappedData) {
+		String addressText = scrappedData.get("Adresa sídla");
+		
+		Address address = new Address();
+		String[] lines = addressText.split("\n");
+		
+		if (lines.length == 3) {
+			address.street = lines[0].trim();
+			address.city = lines[1].trim();
+			address.zipCode = lines[2].trim();
+		} else {
+			address.street = addressText;
+			log.warn("Unknown address format: " + addressText);
+		}
+		
+		return address;
+	}
+	
 	private String parseEmail(Map<String, String> scrappedData) {
 		String rawEmailData = scrappedData.get("E-mail"); // eg. posta@cityofprague.cz (podatelna)
 
