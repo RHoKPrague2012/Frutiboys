@@ -19,9 +19,12 @@ public class Organization extends Model /* MongoModel */ {
 
 	public String name;
 	
-	public String address;
+	public String addressStreet;
+	public String addressCity;
+	public String addressZipCode;
 
-	public String contactAddress;
+	//TODO: pokud se bude scrapovat kontaktni adresa, tak posefit tady a v helpu
+//	public String contactAddress;
 	
 	public String eRegistry;
 	
