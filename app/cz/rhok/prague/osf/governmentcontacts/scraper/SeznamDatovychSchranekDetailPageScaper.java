@@ -119,13 +119,15 @@ public class SeznamDatovychSchranekDetailPageScaper {
 
 		// extract only mail part from string if there are something else
 		String email = "";
-		
-		Matcher matcher = MAIL_REGEX_PATTERN.matcher(rawEmailData);
-		if (matcher.find()) {
-			email = matcher.group(0);
-		} else {			
-			log.warn("Unable to parse e-mail. Parsed text : " + rawEmailData);
-			//TODO: michal : log message doesn't contain context information (which input data causes this)
+
+		if (rawEmailData != null) {
+			Matcher matcher = MAIL_REGEX_PATTERN.matcher(rawEmailData);
+			if (matcher.find()) {
+				email = matcher.group(0);
+			} else {			
+				log.warn("Unable to parse e-mail. Parsed text : " + rawEmailData);
+				//TODO: michal : log message doesn't contain context information (which input data causes this)
+			}
 		}
 						
 		return email;
