@@ -4,6 +4,7 @@
 package jobs;
 
 import models.Organization;
+import play.db.jpa.JPA;
 import play.jobs.Job;
 
 /**
@@ -21,6 +22,9 @@ public class AbstractScraperJob extends Job {
 		}
 		
 		organization.save();
+
+		// save immediately
+		JPA.em().flush();
 	}
 
 }
