@@ -14,6 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import play.Logger;
+import play.db.jpa.JPA;
 import play.jobs.On;
 
 import com.google.common.collect.Lists;
@@ -150,6 +151,12 @@ public class KrajeScraperJob extends AbstractScraperJob {
 					Organization organization = detailPageScrapeTask.call();
 
 					saveOrganization(organization);
+					
+					// save immediately
+					JPA.em().getTransaction().commit();
+				    JPA.em().getTransaction().begin();
+				    JPA.em().flush();
+				    JPA.em().clear();
 
 				}
 
