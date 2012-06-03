@@ -13,7 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import play.Logger;
-import play.jobs.Every;
+import play.jobs.On;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -25,7 +25,7 @@ import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekDetai
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekKrajeListPageScraper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekMunicipalityListPageScraper;
 
-@Every("0 0 23 * * ?") /* each day in 23:00 */
+@On("0 0 23 * * ?") /* each day in 23:00 */
 public class KrajeScraperJob extends AbstractScraperJob {
 
 	private static final String KRAJS_LISTING_PAGE = "http://seznam.gov.cz/ovm/regionList.do";
