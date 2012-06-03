@@ -62,6 +62,24 @@ public class Organization extends Model {
 	public String dataBoxId;
 
 	
+	public void copyStateFrom(Organization organization) {
+		this.name = organization.name;
+		this.addressStreet = organization.addressStreet;
+		this.addressCity = organization.addressCity;
+		this.addressZipCode = organization.addressZipCode;
+		this.eRegistry = organization.eRegistry;
+		this.organizationId = organization.organizationId;
+		this.taxId = organization.taxId;
+		this.bankAccount = organization.bankAccount;
+		this.code = organization.code;
+		this.type = organization.type;
+		this.www = organization.www;
+		this.email = organization.email;
+		this.phone = organization.phone;
+		this.officeHours = organization.officeHours;
+		this.dataBoxId = organization.dataBoxId;
+	}
+	
 	@Override
 	public String toString() {
 		if (StringUtils.isEmpty(name)) {

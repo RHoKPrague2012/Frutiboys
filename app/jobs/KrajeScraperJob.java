@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import play.jobs.Job;
+import models.Organization;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -18,7 +18,7 @@ import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekDetai
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekKrajeListPageScraper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekMunicipalityListPageScraper;
 
-public class KrajeScraperJob extends Job {
+public class KrajeScraperJob extends AbstractScraperJob {
 
 	private static final String GET_PARAM_TO_LIST_ALL_MUNI_IN_KRAJ = "&listType=allMunicipality";
 	private static final String KRAJS_LISTING_PAGE = "http://seznam.gov.cz/ovm/regionList.do";
@@ -64,7 +64,8 @@ public class KrajeScraperJob extends Job {
 						new SeznamDatovychSchranekDetailPageScaper();
 
 				for (URL municipalityDetailPageUrl : detailPageLinks) {
-					detailPageScaper.scrape(municipalityDetailPageUrl.toExternalForm());
+					Organization organization = detailPageScaper.scrape(municipalityDetailPageUrl.toExternalForm());
+					saveOrganization(organization);
 				}
 
 			}
