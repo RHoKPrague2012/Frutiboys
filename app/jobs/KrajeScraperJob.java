@@ -1,10 +1,19 @@
 package jobs;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import junit.extensions.RepeatedTest;
+
+import models.Organization;
+import play.Logger;
 import play.jobs.Job;
 
 import com.google.common.base.Function;
@@ -15,13 +24,13 @@ import com.google.common.collect.Maps;
 import cz.rhok.prague.osf.governmentcontacts.helper.RepeatOnTimeoutTask;
 import cz.rhok.prague.osf.governmentcontacts.scraper.PaginableRecordsListPageRetriever;
 import cz.rhok.prague.osf.governmentcontacts.scraper.PaginableRecordsListPageRetriever.PaginableRecord;
+import cz.rhok.prague.osf.governmentcontacts.scraper.ScraperHelper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekDetailPageScaper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekKrajeListPageScraper;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekMunicipalityListPageScraper;
 
 public class KrajeScraperJob extends Job {
 
-	private static final String GET_PARAM_TO_LIST_ALL_MUNI_IN_KRAJ = "&listType=allMunicipality";
 	private static final String KRAJS_LISTING_PAGE = "http://seznam.gov.cz/ovm/regionList.do";
 
 	@Override
@@ -32,47 +41,113 @@ public class KrajeScraperJob extends Job {
 
 		RepeatOnTimeoutTask<List<URL>> repeatingExtractDetailPageForKrajsPage = new RepeatOnTimeoutTask<List<URL>>() {
 
-					@Override
-					public List<URL> doTask() {
-						return krajsListPageScraper.extractDetailPageUrlsFrom(KRAJS_LISTING_PAGE);
-					}
+			@Override
+			public List<URL> doTask() {
+				return krajsListPageScraper.extractDetailPageUrlsFrom(KRAJS_LISTING_PAGE);
+			}
 
 		};
-		List<URL> krajDetailPageUrl = repeatingExtractDetailPageForKrajsPage.call();
+		List<URL> krajDetailPageUrls = repeatingExtractDetailPageForKrajsPage.call();
 
-		List<URL> krajDetailPageWithAllMuniListedUrl = 				
-				Lists.newArrayList(
-						Collections2.transform(
-								krajDetailPageUrl,
-								convertToUrlWithAllMunicipalityListing()));
+		for (URL krajDetailPageUrl : krajDetailPageUrls) {
+			// save kraj to db
+			// kraj is not saved to db because it's itself part of municipality list
+		}
 
-		PaginableRecordsListPageRetriever listPagesRetriever = new PaginableRecordsListPageRetriever();
+		List<URL> krajDetailPageWithMunicipalitiesListUrls = Lists.newArrayList();
 
-		for (URL krajDetailUrl : krajDetailPageWithAllMuniListedUrl) {
+		for (final URL krajDetailPageUrl : krajDetailPageUrls) {
+
+			RepeatOnTimeoutTask<Document> documentRetrieveTask = new RepeatOnTimeoutTask<Document>() {
+
+				@Override
+				public Document doTask() {
+					try {
+						return Jsoup.connect(krajDetailPageUrl.toExternalForm()).get();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				}
+
+			};
+
+			Document document = documentRetrieveTask.call();
+
+			Element linkToDetailWithAllMunicipalities = document.select("a[href*=allMunicipality]").first();
+
+			if (linkToDetailWithAllMunicipalities != null) {
+				String relativeStringUrl = linkToDetailWithAllMunicipalities.attr("href");
+				String dataBoxBaseUrl = "http://seznam.gov.cz/ovm/regionDetail.do";
+				String urlAsString = dataBoxBaseUrl + relativeStringUrl;
+				try {
+					URL url = new URL(urlAsString);
+					krajDetailPageWithMunicipalitiesListUrls.add(url);
+				} catch (MalformedURLException e) {
+					Logger.error(
+							"Seems that url is malformed. Malformed url: %s When parsed document on: %s",
+							urlAsString, krajDetailPageUrl);
+				}
+			}
+
+		}
+
+
+		for (URL krajDetailUrl : krajDetailPageWithMunicipalitiesListUrls) {
 
 			/* get all urls for list pages of municipalities */
 			Map<Long, URL> allPages = Maps.newHashMap();
 
 			URL nextPaginable = krajDetailUrl;
 			while(nextPaginable != null) {
-				String url = nextPaginable.toExternalForm();
-				PaginableRecord paginable = listPagesRetriever.getListPageLinks(url);
+				final String url = nextPaginable.toExternalForm();
+
+				RepeatOnTimeoutTask<PaginableRecord> listPagesRetrieverTask = new RepeatOnTimeoutTask<PaginableRecord>() {
+
+					@Override
+					public PaginableRecord doTask() {
+						PaginableRecordsListPageRetriever listPagesRetriever = new PaginableRecordsListPageRetriever();
+						return listPagesRetriever.getListPageLinks(url);
+					}
+
+				};
+
+				PaginableRecord paginable = listPagesRetrieverTask.call();
 				allPages.putAll(paginable.getPages());
+				nextPaginable = paginable.getNextPaginable();
 			}
 
-			SeznamDatovychSchranekMunicipalityListPageScraper municipalityListPageScraper = 
-					new SeznamDatovychSchranekMunicipalityListPageScraper();
 
-			for(URL municipalityListPage : allPages.values()) {
+			for(final URL municipalityListPage : allPages.values()) {
 
-				List<URL> detailPageLinks = 
-						municipalityListPageScraper.extractDetailPageUrlsFrom(municipalityListPage.toExternalForm());
+				RepeatOnTimeoutTask<List<URL>> municipalityListPageScraperTask = new RepeatOnTimeoutTask<List<URL>>() {
 
-				SeznamDatovychSchranekDetailPageScaper detailPageScaper = 
-						new SeznamDatovychSchranekDetailPageScaper();
+					@Override
+					public List<URL> doTask() {
+						SeznamDatovychSchranekMunicipalityListPageScraper municipalityListPageScraper = 
+								new SeznamDatovychSchranekMunicipalityListPageScraper();
 
-				for (URL municipalityDetailPageUrl : detailPageLinks) {
-					detailPageScaper.scrape(municipalityDetailPageUrl.toExternalForm());
+						return municipalityListPageScraper.extractDetailPageUrlsFrom(municipalityListPage.toExternalForm());
+					}
+
+				};
+
+				List<URL> detailPageLinks = municipalityListPageScraperTask.call();
+
+				for (final URL municipalityDetailPageUrl : detailPageLinks) {
+					RepeatOnTimeoutTask<Organization> detailPageScrapeTask = new RepeatOnTimeoutTask<Organization>() {
+
+						@Override
+						public Organization doTask() {
+							SeznamDatovychSchranekDetailPageScaper detailPageScaper = new SeznamDatovychSchranekDetailPageScaper();
+							return detailPageScaper.scrape(municipalityDetailPageUrl.toExternalForm());
+						}
+
+					};
+
+					Organization organization = detailPageScrapeTask.call();
+
+					organization.save();
+
 				}
 
 			}
@@ -84,21 +159,5 @@ public class KrajeScraperJob extends Job {
 
 	}
 
-	private Function<URL, URL> convertToUrlWithAllMunicipalityListing() {
-		return new Function<URL, URL>() {
-
-			@Override
-			public URL apply(URL urlToBeConverted) {
-				String urlToBeConvertedAsString = urlToBeConverted.toExternalForm();
-				String newUrl = urlToBeConvertedAsString + GET_PARAM_TO_LIST_ALL_MUNI_IN_KRAJ;
-				try {
-					return new URL(newUrl);
-				} catch (MalformedURLException e) {
-					throw new RuntimeException(e);
-				}
-			}
-
-		};
-	}
 
 }

@@ -28,7 +28,7 @@ public class PaginableRecordsListPageRetriever extends ScraperHelper {
 
 		for (Element paginatorLink : paginatorLinks) {
 			String relativeUrl = paginatorLink.attr("href");
-			String urlAsString = getDataBoxBaseUrl() + relativeUrl;
+			String urlAsString = urlOfPaginableList.substring(0, urlOfPaginableList.lastIndexOf("?")) + relativeUrl;
 			try {
 				URL pageUrl = new URL(urlAsString);
 				Long pageNumber = Long.valueOf(paginatorLink.text());
@@ -38,7 +38,7 @@ public class PaginableRecordsListPageRetriever extends ScraperHelper {
 			}
 		}
 
-		Element nextButton = doc.select(".paginator .next").get(0);
+		Element nextButton = doc.select(".paginator .next").first();
 
 		URL nextPaginable = null;
 		if (nextButton != null) {

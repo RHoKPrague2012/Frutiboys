@@ -27,6 +27,7 @@ public class ScraperHelper {
 		
 		try {
 			doc = Jsoup.connect(url.toExternalForm()).get();
+			return doc;
 		} catch (IOException ex) {
 			
 			if (ex instanceof SocketTimeoutException) {
@@ -37,7 +38,6 @@ public class ScraperHelper {
 			throw new RuntimeException("Unable to parse: " + url, ex);
 		}
 		
-		return doc;
 	}
 
 
@@ -50,7 +50,7 @@ public class ScraperHelper {
 		}
 	}
 	
-	protected String getDataBoxBaseUrl() {
+	public String getDataBoxBaseUrl() {
 		return DATA_BOXES_BASE_URL;
 	}
 
