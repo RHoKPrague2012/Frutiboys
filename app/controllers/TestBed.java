@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 
+import jobs.KrajeScraperJob;
 import models.Organization;
 
 import org.apache.commons.lang.time.StopWatch;
@@ -72,6 +73,10 @@ public class TestBed extends Controller {
     	Long timeElapsed = watch.getTime();
 		renderText("Succesfully saved (in " + timeElapsed + " ms)");
     
+    }
+    
+    public static void startScrapeJob() {
+    	new KrajeScraperJob().now();
     }
 
 }

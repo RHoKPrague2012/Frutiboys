@@ -8,6 +8,7 @@ import java.util.Map;
 
 import models.Organization;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,6 +33,11 @@ public class KrajeScraperJob extends AbstractScraperJob {
 
 	@Override
 	public void doJob() throws Exception {
+		
+		Logger.info("Scraping of municipalities started");
+		
+		StopWatch watches = new StopWatch();
+		watches.start();
 
 		final SeznamDatovychSchranekKrajeListPageScraper krajsListPageScraper = 
 				new SeznamDatovychSchranekKrajeListPageScraper();
@@ -152,7 +158,9 @@ public class KrajeScraperJob extends AbstractScraperJob {
 
 		}
 
-
+		watches.stop();
+		
+		Logger.info("Municipalities have been successfully scraped. It lasts %s ms", watches.getTime());
 
 	}
 
