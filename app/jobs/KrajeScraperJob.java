@@ -12,6 +12,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import cz.rhok.prague.osf.governmentcontacts.helper.RepeatOnTimeoutTask;
 import cz.rhok.prague.osf.governmentcontacts.scraper.PaginableRecordsListPageRetriever;
 import cz.rhok.prague.osf.governmentcontacts.scraper.PaginableRecordsListPageRetriever.PaginableRecord;
 import cz.rhok.prague.osf.governmentcontacts.scraper.SeznamDatovychSchranekDetailPageScaper;
@@ -26,11 +27,18 @@ public class KrajeScraperJob extends Job {
 	@Override
 	public void doJob() throws Exception {
 
-		SeznamDatovychSchranekKrajeListPageScraper krajsListPageScraper = 
+		final SeznamDatovychSchranekKrajeListPageScraper krajsListPageScraper = 
 				new SeznamDatovychSchranekKrajeListPageScraper();
 
-		List<URL> krajDetailPageUrl = 
-				krajsListPageScraper.extractDetailPageUrlsFrom(KRAJS_LISTING_PAGE);
+		RepeatOnTimeoutTask<List<URL>> repeatingExtractDetailPageForKrajsPage = new RepeatOnTimeoutTask<List<URL>>() {
+
+					@Override
+					public List<URL> doTask() {
+						return krajsListPageScraper.extractDetailPageUrlsFrom(KRAJS_LISTING_PAGE);
+					}
+
+		};
+		List<URL> krajDetailPageUrl = repeatingExtractDetailPageForKrajsPage.call();
 
 		List<URL> krajDetailPageWithAllMuniListedUrl = 				
 				Lists.newArrayList(

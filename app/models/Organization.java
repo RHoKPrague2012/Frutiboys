@@ -4,8 +4,10 @@
 package models;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Type;
 
 import play.db.jpa.Model;
 
@@ -13,9 +15,8 @@ import play.db.jpa.Model;
  * @author Vlastimil Dolejs (vlasta.dolejs@gmail.com)
  *
  */
-//@MongoEntity("organization")
 @Entity
-public class Organization extends Model /* MongoModel */ {
+public class Organization extends Model {
 
 	public String name;
 	
@@ -38,18 +39,24 @@ public class Organization extends Model /* MongoModel */ {
 	 */
 	public String taxId;
 	
+	@Lob
+	@Type(type = "org.hibernate.type.TextType")
 	public String bankAccount;
 	
 	public String code;
 	
 	public String type;
 	
+	@Lob
+	@Type(type = "org.hibernate.type.TextType")
 	public String www;
 	
 	public String email;
 	
 	public String phone;
 	
+	@Lob
+	@Type(type = "org.hibernate.type.TextType")
 	public String officeHours;
 	
 	public String dataBoxId;
