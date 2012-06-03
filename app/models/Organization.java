@@ -61,6 +61,8 @@ public class Organization extends Model {
 	
 	public String dataBoxId;
 
+	public Double latitude;
+	public Double longitude;
 	
 	public void copyStateFrom(Organization organization) {
 		this.name = organization.name;
@@ -78,6 +80,12 @@ public class Organization extends Model {
 		this.phone = organization.phone;
 		this.officeHours = organization.officeHours;
 		this.dataBoxId = organization.dataBoxId;
+		this.latitude = organization.latitude;
+		this.longitude = organization.longitude;
+	}
+	
+	public String getAddress() {
+		return addressStreet + ", " + addressCity + " " + addressZipCode + ", Czech Republic";
 	}
 	
 	@Override
