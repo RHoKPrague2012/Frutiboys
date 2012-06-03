@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 
+import jobs.GeocodingJob;
 import jobs.KrajeScraperJob;
 import models.Organization;
 
@@ -77,6 +78,10 @@ public class TestBed extends Controller {
     
     public static void startScrapeJob() {
     	new KrajeScraperJob().now();
+    }
+
+    public static void startGeocodingJob() {
+    	new GeocodingJob().now();
     }
 
 }

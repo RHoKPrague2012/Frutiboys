@@ -15,6 +15,7 @@ GET     /api/help/?                             OrganizationsRest.help
 GET     /admin/testbed/?                        TestBed.index
 POST    /admin/testbed/save/?                   TestBed.scrapeAndSaveSome
 POST    /admin/testbed/kraj_scrape              TestBed.startScrapeJob
+POST    /admin/testbed/geocoding                TestBed.startGeocodingJob
 
 # Import CRUD routes
 *      /admin                                   module:crud
