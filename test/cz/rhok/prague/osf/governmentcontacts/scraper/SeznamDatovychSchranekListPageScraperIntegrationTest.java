@@ -15,7 +15,7 @@ public class SeznamDatovychSchranekListPageScraperIntegrationTest extends UnitTe
 	@Test
 	public void smokeTest() {
 		SeznamDatovychSchranekListPageScraper scraper = new SeznamDatovychSchranekListPageScraper();
-		List<URL> scrape = scraper.scrape("http://seznam.gov.cz/ovm/othersList.do?ref=obcan");
+		List<URL> scrape = scraper.extractDetailPageUrlsFrom("http://seznam.gov.cz/ovm/othersList.do?ref=obcan");
 		assertTrue("There is no url :(", scrape.size() > 0);
 	}
 	

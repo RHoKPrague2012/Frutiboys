@@ -40,8 +40,8 @@ public class TestBed extends Controller {
     	boolean repeatLoop = true;
 		while (repeatLoop)
     	try {
-    		detailPageUrls.addAll(listPageScraper.scrape(listPageUrl));
-    		Thread.sleep(600);
+    		detailPageUrls.addAll(listPageScraper.extractDetailPageUrlsFrom(listPageUrl));
+    		Thread.sleep(1000 /* ms */); // pause before next request (to not spam the web page too much)
     		repeatLoop = false;
     	} catch (RuntimeException ex) {
     		if ( ! (ex.getCause() instanceof SocketTimeoutException)) {
