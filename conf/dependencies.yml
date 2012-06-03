@@ -7,3 +7,4 @@ require:
     - play -> secure
     - com.google.guava -> guava r07
     - org.jsoup -> jsoup 1.6.2
+#    - play -> openshift 0.1.2
